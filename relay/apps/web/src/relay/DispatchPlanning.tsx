@@ -5,7 +5,6 @@ import {errorLabel,type Language} from './i18n.js';
 import {DateTime} from './DateTime.js';
 import {localDateInput,reviewedTimestamp} from './dateInput.js';
 import type {Job,JobDetail} from './jobsModel.js';
-import './dispatchPlanning.css';
 import {clientDeadlineStatus} from './deadlineStatus.js';
 
 export function SiteFields({site}:{site:JobSite|null|undefined}){

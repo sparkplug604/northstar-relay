@@ -21,6 +21,7 @@ import {ux,parseWorkFilter} from './ux.js';
 import {navigationPending,restoreListScroll,safeReturnTo,withReturnTo,type NavigationOptions} from './navigation.js';
 import {clearJobDrafts} from './NewJobForm.js';
 import './relay.css';
+import './dispatchPlanning.css';
 
 export function RelayApp() {
   const [session,setSession]=useState<Session|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState('');

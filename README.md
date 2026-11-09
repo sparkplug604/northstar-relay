@@ -35,14 +35,14 @@ Open [Relay Home](http://127.0.0.1:3004/relay) and sign in as the generated synt
 2. In the same chat, ask it to check Casey’s availability on that date and propose a visit that finishes before 6 p.m. Approve the visit, close chat, and open **Job History**.
 3. Open **Harbour Market**. Under **Manage assignment → Change assignee → Choose a person manually**, select Riley and save. Open **Ask Relay** and ask who’s assigned and when the visit is scheduled.
 
-The demo runs on loopback and uses simulated communications. Map tiles load from OpenFreeMap. `./demo.sh stop` stops the owned services. `./demo.sh start` resumes saved jobs and chat. To rehearse from the original baseline again, use a fresh clone.
+The demo runs on loopback and uses simulated communications. Map tiles load from OpenFreeMap. Travel checks use OSRM with synthetic locations. `./demo.sh stop` stops the owned services. `./demo.sh start` resumes saved jobs and chat. To rehearse from the original baseline again, use a fresh clone.
 
 ## How Agent-Native is integrated
 
 The embedded Chat template receives the selected job as context. Typed Agent-Native actions call the same Relay API as the UI. Reads use the latest saved record. Write actions pause at native approval cards, then use Relay’s versioned mutations or checked assignment API. Relay verifies the updated record and history before reporting success.
 
 - **Home triage and Jobs.** The priority view surfaces blockers and deadline risks. **Resolve with Relay** opens a job-scoped conversation. Ask Relay can read job details and saved contacts and can record a dispatcher-supplied client confirmation with approval.
-- **Scheduling and assignment.** Planning uses client windows, required skills, technician hours and time off, and booked visits. The routing adapter supports road travel estimates when a routing service is configured. The job map and day/week calendar show where and when work is planned.
+- **Scheduling and assignment.** Planning uses client windows, required skills, technician hours and time off, and booked visits. Road travel checks use the OSRM routing adapter. The job map and day/week calendar show where and when work is planned.
 - **Shift recovery.** Dispatchers can pin visits that must stay in place, ask the agent to compare options, and approve a shared draft that saves to Relay.
 
 ## Source map

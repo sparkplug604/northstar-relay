@@ -21,7 +21,7 @@ const readJson = async path => JSON.parse(await readFile(path, 'utf8'));
 const alive = pid => { try { process.kill(pid, 0); return true; } catch { return false; } };
 
 function safeEnv() {
-  const keys = ['HOME', 'PATH', 'USER', 'LOGNAME', 'TMPDIR', 'LANG', 'LC_ALL', 'SSL_CERT_FILE', 'NODE_EXTRA_CA_CERTS'];
+  const keys = ['HOME', 'PATH', 'USER', 'LOGNAME', 'TMPDIR', 'LANG', 'LC_ALL', 'SSL_CERT_FILE', 'NODE_EXTRA_CA_CERTS', 'RELAY_ROUTING_URL'];
   return Object.fromEntries(keys.filter(key => process.env[key]).map(key => [key, process.env[key]]));
 }
 
@@ -123,7 +123,10 @@ async function serve() {
       for (let attempt = 0; attempt < 50 && alive(child.pid); attempt++) await sleep(100);
       if (alive(child.pid)) try { process.kill(-child.pid, 'SIGKILL'); } catch {}
     }));
-    await database?.stop().catch(() => {});
+    const postgres = database?.process;
+    if (postgres?.exitCode === null && postgres.signalCode === null) {
+      await database.stop().catch(() => {});
+    }
     const message = error && [data.dbPassword, data.dispatcherPassword, data.authKey, data.nativeKey]
       .reduce((safe, secret) => safe.replaceAll(secret, '<redacted>'), String(error.message ?? error));
     await saveState({ pid: error ? process.pid : null, phase: error ? 'failed' : 'stopped', ...(message ? { error: message } : {}) });
@@ -164,13 +167,17 @@ async function serve() {
     });
     if (!(await exists(join(cluster, 'PG_VERSION')))) await database.initialise();
     await database.start();
+    database.process.once('exit', () => {
+      if (!stopping) void finish(new Error('The demo PostgreSQL process exited.'));
+    });
     const dispatcherEnv = { RELAY_DEMO_DISPATCHER_PASSWORD: data.dispatcherPassword };
     const reuse = await exists(manifestFile);
     if (reuse && (await readJson(manifestFile)).databaseName !== data.databaseName) {
       throw new Error('Manifest does not match the demo database.');
     }
     await child('relay', process.execPath, [join(root, 'demo/relay-server.mjs')], relayRoot, {
-      ...dispatcherEnv, RELAY_DEMO_AUTH_KEY: data.authKey, RELAY_DEMO_CREATE: String(!reuse),
+      ...dispatcherEnv, RELAY_ROUTING_URL: process.env.RELAY_ROUTING_URL ?? 'https://router.project-osrm.org',
+      RELAY_DEMO_AUTH_KEY: data.authKey, RELAY_DEMO_CREATE: String(!reuse),
       RELAY_DEMO_DATABASE_URL: 'postgresql://relay_test:' + data.dbPassword + '@127.0.0.1:' + postgresPort + '/' + data.databaseName,
     });
     await waitFor('Relay seed', async () => await exists(manifestFile) && await http(relayOrigin + '/relay'));
