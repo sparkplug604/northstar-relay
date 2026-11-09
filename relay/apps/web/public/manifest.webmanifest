@@ -1,0 +1,11 @@
+{
+  "name": "Northstar Lone Worker Safety",
+  "short_name": "Northstar",
+  "description": "Check-ins, urgent SOS, and human incident response for lone workers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f2eb",
+  "theme_color": "#102821",
+  "lang": "en-CA",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

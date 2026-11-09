@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "onboarding": {
+    "firstRun": "off"
+  },
+  "doctor": {
+    "failOnBuild": false,
+    "dbToolScopingDenylist": {
+      "relay_recovery_drafts": "Single authenticated loopback synthetic demo. Draft writes use revision-checked actions."
+    }
+  }
+}

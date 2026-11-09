@@ -1,0 +1,19 @@
+.assignment-workspace { display:grid; grid-template-columns:minmax(280px,.9fr) minmax(350px,1.1fr); height:100%; min-height:620px; color:#183b32; background:#f5f8f6; }
+.assignment-options { overflow:auto; padding:18px; min-width:0; }
+.assignment-options h1 { font-size:22px; margin:0 0 12px; font-weight:700; }
+.assignment-options h2 { font-size:18px; margin:16px 0 8px; font-weight:650; }
+.assignment-options h3 { font-weight:650; }
+.assignment-options p { margin:8px 0; }
+.assignment-options button { padding:9px 12px; border:1px solid #b5cbc2; border-radius:7px; color:#124c3c; background:white; cursor:pointer; min-height:42px; }
+.assignment-options button:disabled { opacity:.5; cursor:default; }
+.assignment-buttons { display:flex; gap:8px; flex-wrap:wrap; }
+.assignment-option,.assignment-proposal { border:1px solid #c5d8cf; border-radius:9px; padding:12px; background:white; margin:12px 0; }
+.assignment-proposal { border:2px solid #1a7055; }
+.assignment-proposal button { background:#17634c; color:white; }
+.assignment-chat { min-width:0; min-height:540px; height:100%; overflow:hidden; border-left:1px solid #c5d8cf; background:white; }
+.assignment-error { color:#9d3026; }
+@media(max-width:720px) {
+  .assignment-workspace { display:block; height:auto; }
+  .assignment-options { overflow:visible; }
+  .assignment-chat { height:580px; border-left:0; border-top:1px solid #c5d8cf; }
+}

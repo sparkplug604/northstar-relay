@@ -1,0 +1,15 @@
+node_modules/
+dist/
+dist-web/
+.react-router/
+.generated/
+runtime/
+agent/data/
+.env
+.env.*
+!.env.example
+*.log
+*.tsbuildinfo
+.DS_Store
+playwright-report/
+test-results/

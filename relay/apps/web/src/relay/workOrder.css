@@ -1,0 +1,42 @@
+.relay-work-order { min-width:0; }
+.relay-work-order h1,.relay-work-order .relay-section-heading p,.relay-work-order .relay-facts dd,.relay-work-dialog>.relay-eyebrow { overflow-wrap:anywhere; }
+.relay-work-order .relay-section-heading>div { min-width:0; }
+.relay-work-order button, .relay-work-order select, .relay-work-order textarea { min-height:44px; }
+.relay-work-action-rail { position:sticky; top:.75rem; z-index:5; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; padding:1.1rem 1.25rem; margin:0 0 1.4rem; border:1px solid #bbcec3; border-radius:12px; background:#fff; box-shadow:0 5px 18px #15332e0d; }
+.relay-work-current { display:flex; flex-direction:column; gap:.45rem; min-width:0; }
+.relay-work-current p { margin:0; font-size:.88rem; overflow-wrap:anywhere; }
+.relay-work-next { display:flex; flex-direction:column; align-items:flex-end; gap:.45rem; }
+.relay-work-next>.relay-primary { min-width:190px; min-height:48px; }
+.relay-work-next>.relay-muted { margin:0; }
+.relay-work-secondary { justify-content:flex-end; }
+.relay-work-administration { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; padding:0 0 1.4rem; margin-bottom:1.4rem; border-bottom:1px solid var(--relay-border); }
+.relay-work-administration p { margin:0; }
+.relay-app .relay-work-dialog { width:min(520px,calc(100vw - 2rem)); max-height:calc(100dvh - 2rem); padding:1.5rem; border:1px solid var(--relay-border); border-radius:16px; background:white; color:var(--relay-ink); box-shadow:0 18px 70px #0b241f40; overflow:auto; }
+.relay-work-dialog::backdrop { background:#071c176b; backdrop-filter:blur(2px); }
+.relay-work-dialog h2 { font-size:1.4rem; margin-top:.45rem; }
+.relay-work-dialog form>p { margin:0; }
+.relay-work-dialog-actions { justify-content:flex-end; padding-top:.5rem; }
+.relay-work-dialog-actions button { min-width:100px; min-height:48px; }
+@media(max-width:600px) {
+  .relay-work-action-rail { top:.5rem; flex-direction:column; align-items:stretch; gap:.9rem; padding:1rem; }
+  .relay-work-next { align-items:stretch; }
+  .relay-work-next>.relay-eyebrow { display:none; }
+  .relay-work-secondary { justify-content:flex-start; }
+  .relay-work-secondary button { flex:1; }
+  .relay-work-current>.relay-eyebrow { display:none; }
+  .relay-app .relay-work-dialog { padding:1.2rem; }
+  .relay-work-dialog-actions { flex-wrap:nowrap; }
+  .relay-work-dialog-actions button { flex:1; min-width:0; }
+}
+
+.relay-work-order:not(.relay-embedded-ack) .relay-work-action-rail { position:static; align-items:flex-start; }
+.relay-work-order .relay-job-card-heading { width:100%; }
+.relay-work-order .relay-section-heading>div { flex:1; }
+.relay-work-current h2 { margin:0; font-size:1.2rem; }
+.relay-work-acceptance { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.6rem 1.2rem; margin:.3rem 0; }
+.relay-work-acceptance dt { color:var(--relay-muted); font-size:.8rem; }
+.relay-work-acceptance dd { margin:.2rem 0 0; font-weight:650; overflow-wrap:anywhere; }
+.relay-work-acceptance small { display:block; margin-top:.2rem; }
+.relay-work-acceptance-help { max-width:29rem; text-align:left; }
+.relay-work-acceptance-help p { margin:.25rem 0; }
+.relay-work-acceptance-help a { color:var(--relay-green); }

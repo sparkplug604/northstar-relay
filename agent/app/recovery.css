@@ -1,0 +1,36 @@
+.recovery { --ink:#152e2c; --muted:#506762; --line:#d2dfd8; --accent:#0d6658; min-height:100%; background:#f4f7f3; color:var(--ink); padding:clamp(20px,4vw,54px); font:15px/1.5 system-ui,sans-serif; }
+.recovery-head,.recovery section { max-width:920px; margin:0 auto 26px; }
+.recovery h1 { font-size:clamp(38px,6vw,68px); font-weight:650; line-height:1; letter-spacing:-.055em; margin:9px 0 15px; }
+.recovery h2 { font-size:23px; line-height:1.2; font-weight:650; margin:6px 0 8px; letter-spacing:-.025em; }
+.recovery h3 { font-weight:650; margin:5px 0; }
+.recovery p { margin:5px 0; }
+.recovery-kicker,.recovery-badge { font:700 11px/1.4 system-ui,sans-serif; letter-spacing:.12em; color:var(--muted); }
+.recovery-badge { display:inline-block; margin-top:12px; border:1px solid var(--line); border-radius:99px; padding:5px 9px; }
+.recovery-incident { background:#173c36; color:#f3faf6; display:grid; grid-template-columns:2fr 1fr; gap:22px; padding:23px; border-radius:14px; }
+.recovery-incident .recovery-kicker,.recovery-incident a { color:#a8dbcc; }
+.recovery-row,.recovery-controls { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.recovery-row { justify-content:space-between; }
+.recovery-visits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:11px; }
+.recovery-card { background:#fff; border:1px solid var(--line); padding:19px; border-radius:12px; }
+.recovery-card .recovery-row,.recovery-controls { margin-top:12px; }
+.recovery button { border:1px solid var(--line); background:#fff; padding:7px 11px; border-radius:8px; font-weight:650; cursor:pointer; }
+.recovery button.recovery-primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+.recovery button[aria-pressed="true"] { background:#e2efe8; color:#225b4c; }
+.recovery button:disabled { opacity:.48; cursor:default; }
+.recovery a { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+.recovery .recovery-flags,.recovery .recovery-receipt { padding:9px 13px; margin-top:12px; border-radius:7px; }
+.recovery .recovery-flags { background:#fff1dc; color:#6d4207; }
+.recovery .recovery-receipt { background:#e4f2e8; }
+@media(max-width:620px) { .recovery-incident,.recovery-visits { grid-template-columns:1fr; } }
+
+.recovery .recovery-advice { background:#e5f1ed; margin-top:14px; border-left:3px solid #0d6658; padding:9px 12px; }
+.recovery button.recovery-chat { margin-top:12px; }
+.recovery-chat-controls { margin:8px 12px; padding:10px 12px; background:#edf5f0; color:#193c35; border:1px solid #d2dfd8; border-radius:9px; font-size:13px; }
+.recovery-chat-controls p,.recovery-chat-controls ul { margin:4px 0; }
+.recovery-chat-buttons { display:flex; flex-wrap:wrap; gap:7px; margin-top:7px; }
+.recovery-chat-buttons button { padding:5px 8px; border:1px solid #819e94; border-radius:6px; font-weight:600; background:white; }
+.recovery-chat-buttons button:disabled { opacity:.5; }
+.recovery-chat-controls a { text-decoration:underline; }
+.recovery-chat-controls { flex:1 0 100%; min-width:0; margin:4px 0; }
+.recovery-embedded-chat { display:flex; flex-direction:column; flex:0 1 420px; min-width:min(380px,100%); height:100%; overflow:hidden; border-left:1px solid #d2dfd8; background:white; }
+@media(max-width:760px) { .recovery-embedded-chat { position:absolute; inset:0 0 0 auto; z-index:20; width:min(420px,100%); } }

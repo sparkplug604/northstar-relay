@@ -1,0 +1,13 @@
+.relay-profile { max-width:1040px; }
+.relay-profile-grid { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:1.4rem; align-items:start; }
+.relay-profile-grid .relay-card { min-width:0; }
+.relay-profile-facts { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; margin:0 0 1.5rem; }
+.relay-profile-facts div:first-child,.relay-profile-facts div:nth-child(2) { grid-column:1/-1; }
+.relay-profile-facts dt { color:var(--relay-muted); font-size:.8rem; }
+.relay-profile-facts dd { margin:.25rem 0 0; font-weight:600; overflow-wrap:anywhere; }
+.relay-app .relay-profile-phone { font-size:1.3rem; font-weight:650; letter-spacing:-.02em; overflow-wrap:anywhere; }
+.relay-app .relay-profile-verification-note { margin:1.3rem 0 0; padding-top:1rem; border-top:1px solid var(--relay-border); }
+@media(max-width:760px) {
+  .relay-profile-grid { grid-template-columns:1fr; gap:0; }
+  .relay-profile-facts { gap:1rem; }
+}

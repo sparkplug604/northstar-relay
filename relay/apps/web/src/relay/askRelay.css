@@ -1,0 +1,9 @@
+.relay-ask-trigger {background:#15543f!important;color:white!important;border-color:#15543f!important;white-space:nowrap;}
+.relay-ask-panel {position:fixed;z-index:180;right:12px;top:12px;bottom:12px;width:min(570px,calc(100vw - 24px));background:white;box-shadow:0 12px 55px #102c3455;border:1px solid #b8d0c5;border-radius:14px;display:flex;flex-direction:column;overflow:hidden;}
+.relay-ask-panel[hidden] {display:none;}
+.relay-ask-panel>header {display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #d4dfd9;}
+.relay-ask-panel h2 {margin:0;font-size:21px;} .relay-ask-panel small {color:#526a60;}
+.relay-ask-panel>iframe {border:0;width:100%;flex:1;min-height:0;}
+.relay-home-triage {width:100%;border:1px solid var(--relay-border);border-radius:14px;display:block;}
+.relay-home-triage-container {margin:1.25rem 0;}
+@media(max-width:600px){.relay-ask-panel {inset:0;width:100%;border-radius:0;}.relay-ask-trigger {padding:.6rem!important;}}

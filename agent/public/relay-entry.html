@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Northstar Relay recovery</title>
+<p role="status" id="status">Opening shift recovery…</p>
+<script type="module">
+  try {
+    const response = await fetch("/_agent-native/auth/local-dev", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+    });
+    if (!response.ok) throw new Error("Local sign-in failed");
+    location.replace("/home?relay=1");
+  } catch {
+    document.getElementById("status").textContent = "Could not open recovery. Reload this page to try again.";
+  }
+</script>
+</html>

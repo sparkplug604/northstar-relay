@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Assign a technician · Northstar Relay</title>
+<p role="status" id="status">Opening assignment assistant…</p>
+<script type="module">
+try {
+  const jobId=new URL(location.href).searchParams.get('jobId');
+  if(!jobId||jobId.length>200)throw Error('Missing job');
+  const response=await fetch('/_agent-native/auth/local-dev',{method:'POST',headers:{'content-type':'application/json'},body:'{}'});
+  if(!response.ok)throw Error('Local sign-in failed');
+  location.replace('/assignment/'+encodeURIComponent(jobId)+'?relay=1');
+}catch{
+  document.getElementById('status').textContent='Could not open the assignment assistant. Reload this page to retry.';
+}
+</script>
+</html>

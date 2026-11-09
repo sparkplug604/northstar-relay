@@ -1,0 +1,19 @@
+{
+  "name": "@northstar/relay-storage-postgres",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "luxon": "^3.7.2",
+    "moment-timezone": "^0.6.6"
+  }
+}

@@ -1,0 +1,37 @@
+.relay-dispatch-fields { display: flex; align-items: end; flex-wrap: wrap; gap: .6rem; margin-block: .6rem; }
+.relay-dispatch-fields label { flex: 1 1 9rem; min-width: 0; }
+.relay-dispatch-form { padding: .8rem; border: 1px solid var(--relay-border); border-radius: 8px; margin-block: .8rem; }
+.relay-dispatch-form fieldset { border: 0; min-width: 0; padding: 0; }
+.relay-dispatch-form input,.relay-dispatch-form select { max-width: 100%; }
+.relay-dispatch-form h4 { margin-bottom: .3rem; }
+.relay-dispatch-candidates { list-style: none; padding: 0; display: grid; gap: .7rem; }
+.relay-dispatch-candidates h3 { margin-top: 0; }
+
+
+.relay-manual-assignment { margin: 1rem 0; }
+.relay-manual-assignment > summary { cursor: pointer; font-weight: 600; padding: .6rem 0; }
+
+.relay-assignment-assistant { width:100%; height:740px; border:1px solid var(--relay-border); border-radius:8px; margin-top:1rem; }
+.relay-app .relay-work-dialog.relay-assignment-dialog { width:min(1240px,calc(100vw - 2rem)); max-width:calc(100vw - 2rem); }
+.relay-assignment-dialog section[aria-label="Dispatch planning"] > p { display:inline-block; margin:.35rem .9rem .35rem 0; }
+
+.relay-app .relay-job-requirements { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin-bottom:0; }
+.relay-job-requirements dd { margin:.25rem 0 0; overflow-wrap:anywhere; }
+.relay-job-support > summary,.relay-job-record > summary { cursor:pointer; font-weight:650; padding:.35rem 0; }
+.relay-job-support { margin-block:1rem; }
+@media(max-width:700px) { .relay-app .relay-job-requirements { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+
+.relay-job-priority,.relay-client-deadline { padding:1rem; border:1px solid #cad8d2; border-radius:10px; background:#f4f7f5; }
+.relay-job-priority dd strong { display:inline-block; padding:.4rem .75rem; border-radius:6px; font-size:1.2rem; background:#e0ebe5; }
+.relay-job-priority-urgent { border:2px solid #a62c24; background:#fff1ef; }
+.relay-job-priority-urgent dd strong { background:#a62c24; color:white; }
+.relay-job-priority-high { border-color:#b26b19; background:#fff7e8; }
+.relay-job-priority-high dd strong { background:#ffdf9e; color:#633800; }
+.relay-app .relay-client-deadline { grid-column:span 2; }
+.relay-deadline-status,.relay-deadline-date { display:block; font-size:1.1rem; }
+.relay-deadline-date { margin-top:.35rem; }
+.relay-client-deadline small { display:block; margin-top:.4rem; font-weight:400; }
+.relay-client-deadline-danger { border:2px solid #a62c24; background:#fff1ef; color:#85251e; }
+.relay-client-deadline-warning { border:2px solid #b26b19; background:#fff7e8; color:#70430b; }
+@media(max-width:700px) { .relay-app .relay-client-deadline { grid-column:1 / -1; } }

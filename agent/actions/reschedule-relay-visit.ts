@@ -1,0 +1,10 @@
+import {AgentActionStopError,defineAction} from '@agent-native/core/action';
+import {z} from 'zod';
+import {rescheduleVisit} from '../server/relay-native/reschedule-visit.js';
+const receipt=z.object({changed:z.boolean(),verified:z.boolean(),subject:z.string(),summary:z.string()});
+export default defineAction({
+ description:'Change the calendar date or time of an existing job visit after approval. Use this for requests like change this job to Nov 10. Copy jobId and expectedVersion from the current job. Supply date as YYYY-MM-DD in the branch timezone, NOT a UTC timestamp or commitment dueAt. If no time was requested, omit time to preserve the saved local clock time. Keeps the assigned technician, rechecks availability and client deadline, and returns the actual saved local date/time. Never use work commitments to move a visit.',
+ schema:z.object({jobId:z.string().min(1).max(200),expectedVersion:z.number().int().positive(),date:z.iso.date().describe('Requested calendar day in the branch timezone, e.g. 2026-11-10 for November 10.'),time:z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).optional().describe('Requested local HH:mm only if the dispatcher specified a time. Otherwise omit to keep the existing visit time.'),note:z.string().trim().min(3).max(500).optional()}),
+ outputSchema:z.union([z.object({jobId:z.string(),scheduledAt:z.string(),visitAtLabel:z.string(),proposal:z.unknown(),change:z.object({verb:z.string(),kind:z.string(),title:z.string(),detail:z.string(),url:z.string()}),_receipt:receipt}),z.object({error:z.string(),_receipt:receipt})]),
+ needsApproval:true,allowPersistentApproval:false,retrySafe:true,deferLoading:false,chatUI:{renderer:'core.record-change'},mcpAnnotations:{readOnlyHint:false,destructiveHint:false,openWorldHint:false,idempotentHint:true},run:async input=>{const result=await rescheduleVisit({...input,note:input.note??'Dispatcher requested visit on '+input.date});if(!result._receipt.verified)throw new AgentActionStopError(result._receipt.summary,{errorCode:'visit_change_rejected',toolResult:JSON.stringify(result)});return result;},
+});

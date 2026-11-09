@@ -1,0 +1,26 @@
+.dispatch-home,.dispatch-panel {color:#183b32;background:#f5f8f6;font:14px/1.5 Inter,system-ui,sans-serif;min-width:0;box-sizing:border-box;}
+.dispatch-home {padding:18px;} .dispatch-home h2 {font-size:23px;margin:0;} .dispatch-home header p {margin:5px 0 12px;color:#50665d;}
+.dispatch-panel {height:100dvh;display:flex;flex-direction:column;padding:12px;gap:8px;overflow:hidden;}
+.dispatch-controls {min-width:0;} .dispatch-panel>.dispatch-controls {flex:0 0 auto;max-height:40%;overflow:auto;} .dispatch-panel details {margin:6px 0;} .dispatch-panel summary {cursor:pointer;font-weight:700;}
+.dispatch-priority {background:white;border:1px solid #c7d9d1;border-left:4px solid #ad7426;border-radius:9px;padding:12px;margin:10px 0;}
+.dispatch-critical {border-left-color:#a72f26;} .dispatch-priority h3 {margin:0;font-size:18px;} .dispatch-priority p {margin:5px 0;} .dispatch-priority ul {padding-left:20px;margin:7px 0;}
+.dispatch-buttons,.dispatch-toolbar {display:flex;align-items:center;flex-wrap:wrap;gap:7px;} .dispatch-toolbar {justify-content:space-between;}
+.dispatch-home button,.dispatch-controls button {border:1px solid #a9c2b6;border-radius:7px;background:white;color:#17523f;padding:8px 10px;cursor:pointer;min-height:40px;font-weight:600;}
+.dispatch-boundary {font-size:12px;color:#50665d;margin:0;flex-shrink:0;} .dispatch-prompts {flex-shrink:0;}
+.dispatch-conversation {display:flex;flex-direction:column;flex:1 1 0;min-height:0;overflow:hidden;background:white;border:1px solid #d3dfd9;border-radius:9px;}
+
+.dispatch-panel .dispatch-controls button {font-size:12px;min-height:32px;padding:5px 9px;line-height:1.35;}
+.dispatch-panel .dispatch-toolbar {font-size:12px;margin-bottom:6px;}
+.dispatch-panel .dispatch-priority {padding:9px;margin:7px 0;}
+.dispatch-panel .dispatch-priority h3 {font-size:15px;}
+.dispatch-panel .dispatch-priority p,.dispatch-panel .dispatch-priority li {font-size:13px;}
+.dispatch-panel .dispatch-prompts {gap:6px;margin-top:8px;}
+.dispatch-panel .dispatch-boundary {font-size:11px;margin-top:5px;}
+.dispatch-conversation>.agent-panel-root {flex:1;min-height:0;height:100%;}
+
+.dispatch-conversation a[href^="http://127.0.0.1:3004/relay/"] {display:inline-flex;align-items:center;min-height:36px;padding:7px 12px;margin:5px 0;border-radius:7px;background:#17523f;color:#fff!important;font-size:13px;font-weight:650;text-decoration:none!important;line-height:1.4;}
+.dispatch-conversation a[href^="http://127.0.0.1:3004/relay/"]:focus-visible {outline:3px solid #ce8d32;outline-offset:3px;}
+.dispatch-blocker-confirmation p {margin:6px 0;white-space:pre-wrap;overflow-wrap:anywhere;}
+.dispatch-blocker-confirmation button {background:#17523f;color:white;}
+.dispatch-blocker-confirmation [role="alert"] {color:#9b2b24;}
+.dispatch-controls .dispatch-resolve-trigger,.dispatch-home .dispatch-resolve-trigger {background:#17523f;color:white;}

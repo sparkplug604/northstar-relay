@@ -1,0 +1,3 @@
+import {z} from 'zod';
+const success=z.object({id:z.string(),jobId:z.string(),jobVersion:z.number(),milestone:z.unknown(),event:z.unknown(),change:z.object({verb:z.string(),kind:z.string(),title:z.string(),detail:z.string(),url:z.string()}),_receipt:z.object({changed:z.boolean(),verified:z.boolean(),subject:z.string(),summary:z.string(),checks:z.array(z.object({id:z.string(),ok:z.boolean(),detail:z.string()}))})});
+export const jobActionOutput=z.union([success,z.object({error:z.string(),_receipt:z.object({changed:z.boolean(),verified:z.literal(false),subject:z.string(),summary:z.string(),checks:z.array(z.object({id:z.string(),ok:z.boolean(),detail:z.string()}))})})]);

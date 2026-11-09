@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Ask Relay</title><p id="status" role="status">Opening Ask Relay…</p><script type="module">
+try {
+ const params=new URL(location.href).searchParams;
+ const response=await fetch('/_agent-native/auth/local-dev',{method:'POST',headers:{'content-type':'application/json'},body:'{}'});
+ if(!response.ok)throw Error('Local sign-in failed');
+ params.set('relay','1');location.replace('/dispatch?'+params);
+}catch{document.getElementById('status').textContent='Ask Relay is unavailable. Close and reopen the panel to retry.';}
+</script></html>
