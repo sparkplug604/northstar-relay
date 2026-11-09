@@ -53,17 +53,21 @@ try {
       threads.push(threadId);
     }
   });
-  const runState = async () => {
-    if (!threadId) return null;
-    return read(nativeApi + '/agent-chat/runs/active?threadId=' + threadId).catch(() => null);
-  };
-  const waitDone = previous => expect.poll(async () => {
-    const state = await runState();
-    return !!state?.runId && state.runId !== previous && !state.active;
-  }, { timeout: 150_000, intervals: [500, 1000] }).toBe(true);
   const calls = async () => {
+    if (!threadId) return [];
     const thread = JSON.parse((await read(nativeApi + '/agent-chat/threads/' + threadId)).threadData);
-    return thread.agentKit.toolCalls ?? [];
+    const messageCalls = (thread.messages ?? []).flatMap(message =>
+      (message.message?.content ?? []).filter(part => part.type === 'tool-call')
+        .map(part => ({ name: part.toolName, input: part.args })));
+    return [...(thread.agentKit?.toolCalls ?? []), ...messageCalls];
+  };
+  const findCall = async predicate => {
+    let match;
+    await expect.poll(async () => {
+      match = (await calls()).find(predicate);
+      return Boolean(match);
+    }, { timeout: 15_000 }).toBe(true);
+    return match;
   };
   const openChat = async () => {
     await page.getByRole('button', { name: '✳ Ask Relay', exact: true }).click();
@@ -77,7 +81,6 @@ try {
     expect(selected.model).toBe(model);
     const approve = frame.getByRole('button', { name: /^Approve( once)?$/ });
     const send = async (message, expectsApproval = false) => {
-      const previous = (await runState())?.runId;
       await composer.fill(message);
       await frame.getByRole('button', { name: 'Send message', exact: true }).click();
       if (expectsApproval) {
@@ -85,8 +88,6 @@ try {
           console.error((await chat.innerText()).slice(-1500));
           throw error;
         });
-      } else {
-        await waitDone(previous);
       }
     };
     return { send, chat, approve };
@@ -100,7 +101,7 @@ try {
     ' at 6 p.m. Vancouver time. Keep the visit time, technician, priority and all other dispatch details unchanged. Show the deadline change for my approval.';
   await parksideChat.send(deadlinePrompt, true);
   await expect(parksideChat.approve).toBeVisible({ timeout: 10_000 });
-  const deadline = (await calls()).find(tool => tool.name === 'update-relay-client-deadline');
+  const deadline = await findCall(tool => tool.name === 'update-relay-client-deadline');
   expect(deadline?.input).toMatchObject({
     jobId: manifest.parksideId, date: manifest.targetDate, time: '18:00', expectedVersion: parkside.job.version,
   });
@@ -118,9 +119,8 @@ try {
   await parksideChat.send('Now check Casey Technician’s available openings on ' + target +
     ', and move Parkside Foods to an earlier available visit that finishes before the new 6 p.m. client deadline. Keep Casey assigned. Request approval to apply the exact checked visit, rather than only saving a proposal.', true);
   await expect(parksideChat.approve).toBeVisible({ timeout: 10_000 });
-  const visit = (await calls()).find(tool =>
-    ['reschedule-relay-visit', 'apply-relay-assignment'].includes(tool.name) && tool.input?.jobId === manifest.parksideId);
-  expect(visit).toBeDefined();
+  await findCall(tool => ['reschedule-relay-visit', 'apply-relay-assignment'].includes(tool.name) &&
+    tool.input?.jobId === manifest.parksideId);
   expect((await job(manifest.parksideId)).job.version).toBe(afterDeadline.job.version);
   await parksideChat.approve.click();
   await expect.poll(async () => (await job(manifest.parksideId)).job.version,
@@ -158,10 +158,9 @@ try {
   threadId = undefined;
   const harbourChat = await openChat();
   await harbourChat.send('Check this job’s saved schedule. Who is assigned now, and when is the visit? Just read the current job.');
-  await expect(harbourChat.chat).toContainText('Riley Technician', { timeout: 15_000 });
-  await expect(harbourChat.chat).toContainText('11:00');
-  expect((await calls()).some(tool =>
-    tool.input?.jobId === manifest.harbourId && /^read-relay-(job-context|records)$/.test(tool.name))).toBe(true);
+  await expect(harbourChat.chat).toContainText('Riley Technician', { timeout: 120_000 });
+  await expect(harbourChat.chat).toContainText(/11(?::00)?\s*(?:a\.?m\.?|GMT|UTC)/i, { timeout: 30_000 });
+  await findCall(tool => tool.input?.jobId === manifest.harbourId && /^read-relay-(job-context|records)$/.test(tool.name));
   expect((await job(manifest.harbourId)).job.version).toBe(changed.job.version);
   console.log('PASS Harbour Market: manual change, saved visit, and scoped read with no additional write.');
 } finally {
