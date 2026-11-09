@@ -68,7 +68,7 @@ export function Jobs({session,language,navigate,search=''}:{session:Session;lang
     </Suspense>}
     {data&&layout==='list'&&(data.items.length===0?<div className="relay-empty"><p>{j('empty')}</p><button type="button" onClick={()=>navigate('/relay/jobs')}>{j('clearFilters')}</button></div>:<div className="relay-job-list">{data.items.map(job=>{
       // Older jobs store the client and short job title together.
-      const [client,...titleParts]=job.customerReference.split(' — ');
+      const [client='',...titleParts]=job.customerReference.split(' — ');
       const title=titleParts.join(' — ').trim() || job.description?.trim();
       return <article key={job.id} className="relay-card relay-job-row">
         <header className="relay-job-card-heading">

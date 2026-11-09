@@ -1,5 +1,3 @@
-import { readAppSecret } from "@agent-native/core/secrets";
-
 export const relayOrigin = "http://127.0.0.1:3004";
 const base = relayOrigin + "/api/relay/v1";
 type Session = { cookie: string; csrfToken: string };
@@ -9,14 +7,12 @@ const authState=authGlobal.__relaySyntheticAuthV1??={};
 
 async function signIn(): Promise<Session> {
   if((authState.blockedUntil??0)>Date.now())throw new Error('Relay sign-in is temporarily rate-limited. Wait a minute, then reload Ask Relay.');
-  const secret = await readAppSecret({
-    key: "RELAY_SYNTHETIC_DISPATCHER", scope: "workspace", scopeId: "relay-recovery-local",
-  });
-  if (!secret) throw new Error("Provision the synthetic Relay dispatcher in the local vault.");
+  const password = process.env.RELAY_DEMO_DISPATCHER_PASSWORD;
+  if (!password) throw new Error("Start the local synthetic demo with ./demo.sh start.");
   const response = await fetch(base + "/auth/login", {
     method: "POST",
     headers: { origin: relayOrigin, "content-type": "application/json" },
-    body: JSON.stringify({ email: "dispatch@relay-demo.invalid", password: secret.value }),
+    body: JSON.stringify({ email: "dispatch@relay-demo.invalid", password }),
   });
   if(response.status===429){authState.blockedUntil=Date.now()+60000;throw new Error('Relay sign-in is temporarily rate-limited. Wait a minute, then reload Ask Relay.');}
   const cookie = response.headers.get("set-cookie")?.split(";")[0];

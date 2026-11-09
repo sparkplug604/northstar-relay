@@ -85,7 +85,7 @@ export function Queue({ session, language, history, onOpen, initialFilter = 'all
       <div className="relay-work-cards">{items.map(({commitment})=><article className="relay-card relay-work-card" key={commitment.commitmentId}><div className="relay-card-title"><h2><button type="button" className="relay-order-link" onClick={()=>onOpen(commitment.workOrderId)}>{commitment.workOrder.externalId}</button></h2><Status commitment={commitment} language={language}/></div><p>{commitment.workOrder.customerReference}</p><dl><div><dt>{t('owner')}</dt><dd>{ownerName(commitment)??t('noOwner')}</dd></div><div><dt>{t('deadline')}</dt><dd><time dateTime={commitment.dueAt}>{dateLabel(language,commitment.dueAt)}</time></dd></div></dl><button type="button" className="relay-card-open" onClick={()=>onOpen(commitment.workOrderId)}>{u('viewOrder')} →</button></article>)}</div>
       </>:<div className="relay-ack-cards">{items.map(({commitment,note})=>{
         const {customerReference,externalId}=commitment.workOrder;
-        const [client,...titleParts]=customerReference.split(' — ');
+        const [client='',...titleParts]=customerReference.split(' — ');
         const title=titleParts.join(' — ').trim();
         const owner=ownerName(commitment);
         const waiting=commitment.ownerRecipientId===null;
