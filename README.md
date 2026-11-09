@@ -1,12 +1,16 @@
+<img src="relay/apps/web/public/icon.svg" alt="Northstar Relay logo" width="64" height="64">
+
 # Northstar Relay
 
 **A user friendly dispatch app built with Agent Native.**
 
-Our entry for the **2026 Builder.io Agent-Native Hackathon** puts the dispatcher and the agent on the same job. Dispatchers use Northstar Relay to review work orders, assign technicians, schedule visits, and track repairs. When a client changes a deadline, Ask Relay helps find a qualified technician and a visit that fits. The dispatcher reviews the proposed change in chat and can verify what was saved in Job History. [Builder.io hackathon](https://www.builder.io/hackathon)
+Northstar Relay is a service dispatch app for technicians and the dispatchers who schedule them. Dispatchers can see which jobs need attention, assign technicians, and plan visits with a job map and calendar. Technicians can see what needs fixing and where to go. With Ask Relay built into the job page using Agent Native, Northstar Relay shows what the next generation of service dispatch can look like. Dispatchers can edit jobs directly or ask the agent to check availability and propose a visit. The agent helps work out the plan, and the dispatcher decides what gets saved to the shared job record.
+
+We built Ask Relay and the new dispatch planning tools for the **2026 Builder.io Agent-Native Hackathon**, extending Northstar Relay’s existing work-order and scheduling app. [Builder.io hackathon](https://www.builder.io/hackathon)
 
 [See the screenshots](#walkthrough-in-screenshots) · [Run the demo locally](#run-the-synthetic-demo) · [What we built during the hackathon](#what-was-built-during-the-hackathon)
 
-## Watch the 2:35 demo
+## Watch the Northstar Relay demo
 
 Watch Parkside Foods from **0:41** for two approvals in one conversation. At **2:00**, Harbour Market shows the reverse direction. Drew edits the assignment on the job page, then Ask Relay reads the saved change.
 
