@@ -1,7 +1,7 @@
 import {beforeEach,afterEach,expect,it,vi} from 'vitest';
 vi.mock('@agent-native/core/credentials', () => ({ resolveCredential: async () => 'test-only-placeholder' }));
 vi.mock('@agent-native/core/server/request-context', () => ({
-  getRequestRunContext: () => ({ userEmail: 'native-test@example.invalid' }),
+  getCredentialContext: () => ({ userEmail: 'native-test@example.invalid' }),
 }));
 const runtime=globalThis as typeof globalThis&{__relaySyntheticAuthV1?:unknown};
 beforeEach(()=>{delete runtime.__relaySyntheticAuthV1;vi.resetModules();});

@@ -1,5 +1,5 @@
 import { resolveCredential } from '@agent-native/core/credentials';
-import { getRequestRunContext } from '@agent-native/core/server/request-context';
+import { getCredentialContext } from '@agent-native/core/server/request-context';
 
 export const relayOrigin = "http://127.0.0.1:3004";
 const base = relayOrigin + "/api/relay/v1";
@@ -32,7 +32,7 @@ async function signIn(identity: Identity, authState: AuthState): Promise<Session
 export class RelayRequestError extends Error {constructor(public status:number){super(`Relay rejected the request (${status}). Reload the job and retry.`);}}
 
 export async function relay<T>(path: string, change?: { body: object; key: string }, retry = true): Promise<T> {
-  const context = getRequestRunContext();
+  const context = getCredentialContext();
   if (!context?.userEmail) throw new Error('Ask Relay requires an authenticated local session.');
   const identity = { userEmail: context.userEmail, ...(context.orgId ? { orgId: context.orgId } : {}) };
   const key = JSON.stringify([identity.userEmail, identity.orgId]);

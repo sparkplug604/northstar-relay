@@ -75,13 +75,20 @@ try {
     const selected = await read(nativeApi + '/agent-model-defaults?appId=board');
     expect(selected.engine).toBe(engine);
     expect(selected.model).toBe(model);
-    const send = async message => {
+    const approve = frame.getByRole('button', { name: /^Approve( once)?$/ });
+    const send = async (message, expectsApproval = false) => {
       const previous = (await runState())?.runId;
       await composer.fill(message);
       await frame.getByRole('button', { name: 'Send message', exact: true }).click();
-      await waitDone(previous);
+      if (expectsApproval) {
+        await expect(approve).toBeVisible({ timeout: 120_000 }).catch(async error => {
+          console.error((await chat.innerText()).slice(-1500));
+          throw error;
+        });
+      } else {
+        await waitDone(previous);
+      }
     };
-    const approve = frame.getByRole('button', { name: /^Approve( once)?$/ });
     return { send, chat, approve };
   };
 
@@ -91,18 +98,17 @@ try {
   const target = DateTime.fromISO(manifest.targetDate, { zone }).toFormat('MMMM d, yyyy');
   const deadlinePrompt = 'Set Parkside Foods’ client completion deadline to ' + target +
     ' at 6 p.m. Vancouver time. Keep the visit time, technician, priority and all other dispatch details unchanged. Show the deadline change for my approval.';
-  await parksideChat.send(deadlinePrompt);
+  await parksideChat.send(deadlinePrompt, true);
   await expect(parksideChat.approve).toBeVisible({ timeout: 10_000 });
   const deadline = (await calls()).find(tool => tool.name === 'update-relay-client-deadline');
   expect(deadline?.input).toMatchObject({
     jobId: manifest.parksideId, date: manifest.targetDate, time: '18:00', expectedVersion: parkside.job.version,
   });
   expect((await job(manifest.parksideId)).job.version).toBe(parkside.job.version);
-  let previous = (await runState())?.runId;
   await parksideChat.approve.click();
   await expect.poll(async () => (await job(manifest.parksideId)).job.serviceWindow.completeBy,
     { timeout: 45_000 }).toBe(manifest.targetDeadline);
-  await waitDone(previous);
+  await expect(parksideChat.approve).toBeHidden({ timeout: 45_000 });
   const afterDeadline = await job(manifest.parksideId);
   expect(afterDeadline.job.version).toBe(parkside.job.version + 1);
   expect(afterDeadline.job.scheduledAt).toBe(parkside.job.scheduledAt);
@@ -110,17 +116,16 @@ try {
 
   console.log('Parkside: check Casey’s availability and approve the visit in the same chat.');
   await parksideChat.send('Now check Casey Technician’s available openings on ' + target +
-    ', and move Parkside Foods to an earlier available visit that finishes before the new 6 p.m. client deadline. Keep Casey assigned. Request approval to apply the exact checked visit, rather than only saving a proposal.');
+    ', and move Parkside Foods to an earlier available visit that finishes before the new 6 p.m. client deadline. Keep Casey assigned. Request approval to apply the exact checked visit, rather than only saving a proposal.', true);
   await expect(parksideChat.approve).toBeVisible({ timeout: 10_000 });
   const visit = (await calls()).find(tool =>
     ['reschedule-relay-visit', 'apply-relay-assignment'].includes(tool.name) && tool.input?.jobId === manifest.parksideId);
   expect(visit).toBeDefined();
   expect((await job(manifest.parksideId)).job.version).toBe(afterDeadline.job.version);
-  previous = (await runState())?.runId;
   await parksideChat.approve.click();
   await expect.poll(async () => (await job(manifest.parksideId)).job.version,
     { timeout: 60_000 }).toBe(parkside.job.version + 2);
-  await waitDone(previous);
+  await expect(parksideChat.approve).toBeHidden({ timeout: 45_000 });
   const saved = await job(manifest.parksideId);
   expect(saved.job.assigneeId).toBe(casey.id);
   expect(saved.job.serviceWindow.completeBy).toBe(manifest.targetDeadline);
