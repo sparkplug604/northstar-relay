@@ -30,7 +30,7 @@ export async function seedScenario({ pool, branchId, responderId, password, hash
   const request = {
     async post(url, { headers: requestHeaders, data }) {
       const response = await fetch(url, { method: 'POST', headers: requestHeaders, body: JSON.stringify(data) });
-      return { ok: () => response.ok, json: () => response.json(), text: () => response.text() };
+      return { ok: () => response.ok, json: () => response.json(), text: () => response.clone().text() };
     },
   };
   const seed = await seedRelayUxExamples({ origin: relayOrigin, branchId, responderId, request, headers });
