@@ -12,7 +12,7 @@ We built Ask Relay and the new dispatch planning tools for the **2026 Builder.io
 
 ## Watch the Northstar Relay demo
 
-Watch Parkside Foods from **0:41** for two approvals in one conversation. At **2:00**, Harbour Market shows the reverse direction. Drew edits the assignment on the job page, then Ask Relay reads the saved change.
+Follow Drew Dispatcher from the Home dashboard through two common changes in a service day. When a client moves a repair deadline, Drew works with Ask Relay to find a visit that fits, approves the deadline and visit in one chat, and verifies both changes in Job History. On another job, Drew changes the technician directly on the job page and Ask Relay reads back the saved assignment. Both paths keep Drew in control and give the team one place to see the current plan and how it changed.
 
 https://github.com/user-attachments/assets/308244f3-e3f1-47f8-bb7f-99b310aa722b
 
