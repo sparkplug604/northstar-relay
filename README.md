@@ -8,7 +8,7 @@ Northstar Relay is a service dispatch app for technicians and the dispatchers wh
 
 We built Ask Relay and the new dispatch planning tools for the **2026 Builder.io Agent-Native Hackathon**, extending Northstar Relay’s existing work-order and scheduling app. [Builder.io hackathon](https://www.builder.io/hackathon)
 
-[See the screenshots](#walkthrough-in-screenshots) · **[Getting Started](docs/getting-started.md)** · [What we built during the hackathon](#what-was-built-during-the-hackathon)
+[See the screenshots](#walkthrough-in-screenshots) · **[Getting Started](#getting-started)** · [What we built during the hackathon](#what-was-built-during-the-hackathon)
 
 ## Watch the Northstar Relay demo
 
@@ -17,6 +17,12 @@ Follow Drew Dispatcher from the Home dashboard through two common changes in a s
 https://github.com/user-attachments/assets/308244f3-e3f1-47f8-bb7f-99b310aa722b
 
 [Full-resolution video on GitHub Releases](https://github.com/sparkplug604/northstar-relay/releases/tag/hackathon-demo)
+
+## Getting Started
+
+The guide shows how to download and launch the local demo, sign in as Drew Dispatcher, and try the Parkside Foods and Harbour Market workflows. It includes setup for macOS, Linux, and Windows via WSL2.
+
+[Open the Getting Started guide](docs/getting-started.md)
 
 ## Why we built with Agent-Native
 
@@ -77,8 +83,6 @@ The job map locates Harbour Market in Coal Harbour. The technician calendar show
 | [agent/actions/](agent/actions/) | Agent-Native actions for job reads, checked scheduling, and approved writes |
 | [agent/app/routes/](agent/app/routes/) | Embedded Ask Relay, assignment, and recovery interfaces |
 | [demo/](demo/) | Local service supervision, synthetic fixtures, Qwen configuration, and browser rehearsal |
-
-See [Getting Started](docs/getting-started.md) for the download, demo login, and verification commands.
 
 ## What was built during the hackathon
 
