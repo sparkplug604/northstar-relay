@@ -502,7 +502,7 @@ describe('Relay jobs: independent lifecycle and commitments', { skip: !databaseU
   });
   it('blocks cancelled tenants from the new job endpoints', async () => {
     const initial = await create();
-    await pool.query("INSERT INTO relay.deletion_tombstones(tenant_id,cancelled_at,backup_delete_by) VALUES($1,clock_timestamp(),clock_timestamp()+interval '30 days')", [tenantId]);
+    await pool.query("INSERT INTO relay.deletion_tombstones(tenant_id,cancelled_at,backup_delete_by) VALUES($1,statement_timestamp(),statement_timestamp()+interval '30 days')", [tenantId]);
     const list = await app.inject({ method: 'GET', url: '/api/relay/v1/jobs?view=all', headers: dispatcher });
     assert.equal(list.statusCode, 401);
     const mutation = await action(initial.job.id, { action: 'add_update', note: 'Blocked after cancellation' }, dispatcher, initial.job.version);
