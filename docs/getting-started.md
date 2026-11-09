@@ -14,11 +14,18 @@ This is the runnable, local version of the hackathon demo. The ZIP includes the 
    ./demo.sh launch
    ```
 
-## Windows via WSL2 and Ubuntu Linux
+## Windows via WSL2 and Linux
 
-On Windows, run the Linux launcher inside Ubuntu on WSL2. Set up Ubuntu first with `wsl --install -d Ubuntu` from PowerShell as an administrator and follow Microsoft’s prompts. Open Ubuntu and create a regular Linux user. On Ubuntu Linux, start at the next step. [Microsoft WSL setup](https://learn.microsoft.com/en-us/windows/wsl/install)
+The published demo runs on Windows through WSL2. **Ubuntu** is the release-tested distribution. **Debian** is a lighter option that uses the same setup commands below. Relay's Debian compatibility is unverified, and the same roughly 1.4 GB Qwen download applies.
 
-1. Install Node.js 24 LTS and Ollama **inside Ubuntu**. Install the tools needed to download and extract the ZIP. [Node.js downloads](https://nodejs.org/en/download) · [Ollama for Linux](https://docs.ollama.com/linux)
+From PowerShell as an administrator, choose one distribution.
+
+- **Ubuntu** — `wsl --install -d Ubuntu`
+- **Debian** — `wsl --install -d Debian`
+
+Open the distribution you installed and create a regular Linux user. If you’re already using Linux, start at step 1 below. [Microsoft WSL setup](https://learn.microsoft.com/en-us/windows/wsl/install) · [Debian on WSL](https://wiki.debian.org/InstallingDebianOn/Microsoft/Windows/SubsystemForLinux)
+
+1. Install Node.js 24 LTS and Ollama **inside your Linux distribution**. Install the tools needed to download and extract the ZIP. [Node.js downloads](https://nodejs.org/en/download) · [Ollama for Linux](https://docs.ollama.com/linux)
 
    ```bash
    sudo apt-get update
@@ -56,7 +63,7 @@ The launcher prints job links and a target date. Your installation chooses upcom
 ## Stop, restart, or troubleshoot
 
 - Run `./demo.sh stop` to stop the local services. Launch again to resume the saved jobs and conversations. To rehearse from the original seed again, extract a fresh copy after stopping the current demo.
-- If the Mac launcher does not open, run `sh ./demo.sh launch` from the extracted folder in Terminal. If a tool is missing, check `node --version`, `npm --version`, and `ollama --version` there or in Ubuntu.
+- If the Mac launcher does not open, run `sh ./demo.sh launch` from the extracted folder in Terminal. If a tool is missing, check `node --version`, `npm --version`, and `ollama --version` there or in your WSL distribution.
 - If the launcher reports a port conflict, close the previous Relay demo before retrying. Relay uses ports 3004 and 3005 for the app and agent, 11435 for its local Ollama service, and 55482 for embedded PostgreSQL.
 - For a startup error, check `runtime/logs/supervisor.log` and the service log it names. The first model download writes progress to the supervisor log. Map tiles and road estimates use OpenFreeMap and OSRM with synthetic job locations.
 
