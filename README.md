@@ -15,14 +15,13 @@ Northstar Relay helps service teams review work orders, assign technicians, sche
 
 ## Run the synthetic demo
 
-Use macOS or Linux with Node.js 22.22 or newer, npm, pnpm 11, and Ollama. Run as a normal user so embedded PostgreSQL can initialize. The install downloads dependencies, and Qwen requires about 1.4 GB of model storage.
+Use macOS or Linux with Node.js 22.22 or newer, npm, pnpm 11, and Ollama. Run as a normal user so embedded PostgreSQL can initialize. Start Ollama on its default local port before creating the model. The install downloads dependencies, and Qwen requires about 1.4 GB of model storage.
 
 ```bash
 git clone https://github.com/sparkplug604/northstar-relay.git
 cd northstar-relay
 ./demo.sh install
 
-# With Ollama running on its default local port:
 ollama pull qwen3:1.7b
 ollama create qwen3-relay:1.7b -f demo/Qwen.Modelfile
 

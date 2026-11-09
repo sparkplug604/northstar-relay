@@ -1,6 +1,6 @@
 import { engine, model, nativeOrigin, ollamaOrigin } from './constants.mjs';
 
-export async function prepareNative(parksideId) {
+export async function prepareNative(parksideId, dispatcherPassword) {
   const api = nativeOrigin + '/_agent-native';
   const headers = { origin: nativeOrigin, 'content-type': 'application/json' };
   const auth = await fetch(api + '/auth/local-dev', {
@@ -8,6 +8,14 @@ export async function prepareNative(parksideId) {
   });
   if (!auth.ok) throw new Error('Agent-Native local sign-in failed (' + auth.status + ').');
   headers.cookie = auth.headers.getSetCookie().map(value => value.split(';')[0]).join('; ');
+  const vault = await fetch(api + '/secrets/adhoc', {
+    method: 'POST', headers, signal: AbortSignal.timeout(30_000),
+    body: JSON.stringify({
+      name: 'RELAY_SYNTHETIC_DISPATCHER', value: dispatcherPassword,
+      scope: 'workspace', description: 'Generated local Relay demo dispatcher',
+    }),
+  });
+  if (!vault.ok) throw new Error('Local dispatcher vault setup failed (' + vault.status + ').');
   const defaults = api + '/agent-model-defaults?appId=board';
   let response = await fetch(defaults, { headers });
   let selected = await response.json();

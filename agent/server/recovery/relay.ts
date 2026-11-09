@@ -1,14 +1,21 @@
+import { resolveCredential } from '@agent-native/core/credentials';
+import { getRequestRunContext } from '@agent-native/core/server/request-context';
+
 export const relayOrigin = "http://127.0.0.1:3004";
 const base = relayOrigin + "/api/relay/v1";
 type Session = { cookie: string; csrfToken: string };
-// Share one scoped synthetic session across native actions and retained engines on HMR.
-const authGlobal=globalThis as typeof globalThis&{__relaySyntheticAuthV1?:{pending?:Promise<Session>;blockedUntil?:number}};
-const authState=authGlobal.__relaySyntheticAuthV1??={};
+// Reuse a scoped synthetic session across actions and Vite module reloads.
+type AuthState = { pending?: Promise<Session>; blockedUntil?: number };
+type Identity = { userEmail: string; orgId?: string };
+const authGlobal = globalThis as typeof globalThis & { __relaySyntheticAuthV1?: Map<string, AuthState> };
+const sessions = authGlobal.__relaySyntheticAuthV1 ??= new Map();
 
-async function signIn(): Promise<Session> {
-  if((authState.blockedUntil??0)>Date.now())throw new Error('Relay sign-in is temporarily rate-limited. Wait a minute, then reload Ask Relay.');
-  const password = process.env.RELAY_DEMO_DISPATCHER_PASSWORD;
-  if (!password) throw new Error("Start the local synthetic demo with ./demo.sh start.");
+async function signIn(identity: Identity, authState: AuthState): Promise<Session> {
+  if ((authState.blockedUntil ?? 0) > Date.now()) {
+    throw new Error('Relay sign-in is temporarily rate-limited. Wait a minute, then reload Ask Relay.');
+  }
+  const password = await resolveCredential('RELAY_SYNTHETIC_DISPATCHER', identity);
+  if (!password) throw new Error('Start the local synthetic demo with ./demo.sh start.');
   const response = await fetch(base + "/auth/login", {
     method: "POST",
     headers: { origin: relayOrigin, "content-type": "application/json" },
@@ -25,7 +32,16 @@ async function signIn(): Promise<Session> {
 export class RelayRequestError extends Error {constructor(public status:number){super(`Relay rejected the request (${status}). Reload the job and retry.`);}}
 
 export async function relay<T>(path: string, change?: { body: object; key: string }, retry = true): Promise<T> {
-  const pending = authState.pending ??= signIn();
+  const context = getRequestRunContext();
+  if (!context?.userEmail) throw new Error('Ask Relay requires an authenticated local session.');
+  const identity = { userEmail: context.userEmail, ...(context.orgId ? { orgId: context.orgId } : {}) };
+  const key = JSON.stringify([identity.userEmail, identity.orgId]);
+  let authState = sessions.get(key);
+  if (!authState) {
+    authState = {};
+    sessions.set(key, authState);
+  }
+  const pending = authState.pending ??= signIn(identity, authState);
   let auth: Session;
   try {
     auth = await pending;

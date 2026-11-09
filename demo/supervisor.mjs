@@ -184,11 +184,11 @@ async function serve() {
     await waitFor('Ollama', () => http(ollamaOrigin + '/api/tags'));
     await warmModel();
     await child('agent', process.execPath, ['node_modules/vite/bin/vite.js', '--host', '127.0.0.1', '--port', '3005', '--strictPort'], agentRoot, {
-      ...dispatcherEnv, OLLAMA_BASE_URL: ollamaOrigin,
+      OLLAMA_BASE_URL: ollamaOrigin,
       WORKSPACE_SECRETS_ENCRYPTION_KEY: data.nativeKey, AGENT_NATIVE_TELEMETRY_DISABLED: '1',
     });
     await waitFor('Agent-Native', () => http(nativeOrigin + '/'));
-    await prepareNative((await readJson(manifestFile)).parksideId);
+    await prepareNative((await readJson(manifestFile)).parksideId, data.dispatcherPassword);
     await saveState({ pid: process.pid, phase: 'ready' });
     setInterval(() => {}, 30_000);
   } catch (error) {

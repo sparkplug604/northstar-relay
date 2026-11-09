@@ -1,7 +1,11 @@
 import {beforeEach,afterEach,expect,it,vi} from 'vitest';
+vi.mock('@agent-native/core/credentials', () => ({ resolveCredential: async () => 'test-only-placeholder' }));
+vi.mock('@agent-native/core/server/request-context', () => ({
+  getRequestRunContext: () => ({ userEmail: 'native-test@example.invalid' }),
+}));
 const runtime=globalThis as typeof globalThis&{__relaySyntheticAuthV1?:unknown};
-beforeEach(()=>{delete runtime.__relaySyntheticAuthV1;vi.resetModules();vi.stubEnv('RELAY_DEMO_DISPATCHER_PASSWORD','test-only-placeholder');});
-afterEach(()=>{delete runtime.__relaySyntheticAuthV1;vi.unstubAllGlobals();vi.unstubAllEnvs();});
+beforeEach(()=>{delete runtime.__relaySyntheticAuthV1;vi.resetModules();});
+afterEach(()=>{delete runtime.__relaySyntheticAuthV1;vi.unstubAllGlobals();});
 it('shares a single login across hot-reloaded native modules',async()=>{
  let logins=0;
  vi.stubGlobal('fetch',vi.fn(async(input:string)=>{
