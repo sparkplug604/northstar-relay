@@ -1,0 +1,60 @@
+name: Verify the downloadable demo
+
+on:
+  pull_request:
+    paths:
+      - 'demo/**'
+      - 'demo.sh'
+      - 'Start Northstar Relay.command'
+      - 'relay/**'
+      - 'agent/**'
+      - '.github/workflows/verify-download.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  linux-download:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+      - name: Install Ollama 0.15.5
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/ollama"
+          archive="$RUNNER_TEMP/ollama-linux-amd64.tar.zst"
+          curl -fLS --retry 3 https://github.com/ollama/ollama/releases/download/v0.15.5/ollama-linux-amd64.tar.zst -o "$archive"
+          printf '%s  %s\n' ce49ae427b540e143ce54cdd0b72a032a35c3bb38db6d929532089ffcc4d6827 "$archive" | sha256sum -c
+          tar --zstd -xf "$archive" -C "$RUNNER_TEMP/ollama"
+          rm "$archive"
+          echo "$RUNNER_TEMP/ollama/bin" >> "$GITHUB_PATH"
+      - name: Launch an extracted ZIP and check the synthetic sign-in
+        shell: bash
+        run: |
+          git archive --format=zip --prefix=northstar-relay-demo/ -o "$RUNNER_TEMP/demo.zip" HEAD
+          unzip -q "$RUNNER_TEMP/demo.zip" -d "$RUNNER_TEMP"
+          cd "$RUNNER_TEMP/northstar-relay-demo"
+          trap './demo.sh stop' EXIT
+          ./demo.sh launch --no-browser
+          node demo/check-launch.mjs
+          ./demo.sh stop
+          ./demo.sh start
+          node demo/check-launch.mjs
+      - name: Report startup errors
+        if: failure()
+        shell: bash
+        run: |
+          log_dir="$RUNNER_TEMP/northstar-relay-demo/runtime/logs"
+          for service in supervisor relay agent qwen; do
+            if test -f "$log_dir/$service.log"; then
+              printf '\n--- %s ---\n' "$service"
+              tail -12 "$log_dir/$service.log"
+            fi
+          done

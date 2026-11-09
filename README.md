@@ -8,7 +8,7 @@ Northstar Relay is a service dispatch app for technicians and the dispatchers wh
 
 We built Ask Relay and the new dispatch planning tools for the **2026 Builder.io Agent-Native Hackathon**, extending Northstar Relay’s existing work-order and scheduling app. [Builder.io hackathon](https://www.builder.io/hackathon)
 
-[See the screenshots](#walkthrough-in-screenshots) · [Run the demo locally](#run-the-synthetic-demo) · [What we built during the hackathon](#what-was-built-during-the-hackathon)
+[See the screenshots](#walkthrough-in-screenshots) · **[Getting Started](docs/getting-started.md)** · [What we built during the hackathon](#what-was-built-during-the-hackathon)
 
 ## Watch the Northstar Relay demo
 
@@ -69,30 +69,6 @@ The job map locates Harbour Market in Coal Harbour. The technician calendar show
 
 ![Riley Technician’s day calendar showing Harbour Market at 11 a.m.](docs/screenshots/07-technician-calendar.png)
 
-## Run the synthetic demo
-
-Use macOS or Linux with Node.js 22.22 or newer, npm, pnpm 11, and Ollama. Run as a normal user so embedded PostgreSQL can initialize. Start Ollama on its default local port before creating the model. The install downloads dependencies, and Qwen requires about 1.4 GB of model storage.
-
-```bash
-git clone https://github.com/sparkplug604/northstar-relay.git
-cd northstar-relay
-./demo.sh install
-
-ollama pull qwen3:1.7b
-ollama create qwen3-relay:1.7b -f demo/Qwen.Modelfile
-
-./demo.sh start
-./demo.sh credentials
-```
-
-Open [Relay Home](http://127.0.0.1:3004/relay) and sign in as the generated synthetic dispatcher. Startup prints links for Parkside Foods and Harbour Market, plus the target date for your seeded Parkside scenario. Dates are chosen at first startup so the scheduling exercise uses future working days.
-
-1. On **Parkside Foods**, open **Ask Relay**. Ask it to set the client completion deadline to the printed target date at 6 p.m. Vancouver time. Review the approval card and click **Approve**.
-2. In the same chat, ask it to check Casey’s availability on that date and propose a visit that finishes before 6 p.m. Approve the visit, close chat, and open **Job History**.
-3. Open **Harbour Market**. Under **Manage assignment → Change assignee → Choose a person manually**, select Riley and save. Open **Ask Relay** and ask who’s assigned and when the visit is scheduled.
-
-The demo runs on loopback and uses simulated communications. Map tiles load from OpenFreeMap. Travel checks use OSRM with synthetic locations. `./demo.sh stop` stops the owned services. `./demo.sh start` resumes saved jobs and chat. To rehearse from the original baseline again, use a fresh clone.
-
 ## Source map
 
 | Path | Purpose |
@@ -102,7 +78,7 @@ The demo runs on loopback and uses simulated communications. Map tiles load from
 | [agent/app/routes/](agent/app/routes/) | Embedded Ask Relay, assignment, and recovery interfaces |
 | [demo/](demo/) | Local service supervision, synthetic fixtures, Qwen configuration, and browser rehearsal |
 
-Run `npm run build:all` in `relay/` and `pnpm typecheck && pnpm test && pnpm agent-native:doctor` in `agent/`. With the demo freshly seeded and Google Chrome installed, run `node demo/verify.mjs` from the root. The rehearsal saves the two Parkside approvals and the Harbour Market reassignment and checks the agent’s readback.
+See [Getting Started](docs/getting-started.md) for the download, demo login, and verification commands.
 
 ## What was built during the hackathon
 

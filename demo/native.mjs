@@ -1,4 +1,6 @@
-import { engine, model, nativeOrigin, ollamaOrigin } from './constants.mjs';
+import { spawn } from 'node:child_process';
+import { join } from 'node:path';
+import { engine, model, nativeOrigin, ollamaOrigin, root } from './constants.mjs';
 
 export async function prepareNative(parksideId, dispatcherPassword) {
   const api = nativeOrigin + '/_agent-native';
@@ -41,11 +43,30 @@ export async function prepareNative(parksideId, dispatcherPassword) {
   }
 }
 
-export async function warmModel() {
-  const tags = await (await fetch(ollamaOrigin + '/api/tags')).json();
-  if (!tags.models.some(item => item.name === model)) {
-    throw new Error('Missing ' + model + '. Follow the model setup in README.md.');
+export async function provisionModel(onDownload) {
+  const response = await fetch(ollamaOrigin + '/api/tags', { signal: AbortSignal.timeout(10_000) });
+  if (!response.ok) throw new Error('Ollama model list is unavailable.');
+  const { models } = await response.json();
+  if (models.some(item => item.name === model)) return;
+  await onDownload();
+  const run = args => new Promise((resolve, reject) => {
+    const child = spawn('ollama', args, {
+      cwd: root, stdio: 'inherit', env: { ...process.env, OLLAMA_HOST: new URL(ollamaOrigin).host },
+      timeout: 18 * 60_000,
+    });
+    child.once('error', reject);
+    child.once('exit', code => {
+      if (code === 0) resolve();
+      else reject(new Error('Ollama could not prepare Qwen. See runtime/logs/supervisor.log.'));
+    });
+  });
+  if (!models.some(item => item.name === 'qwen3:1.7b')) {
+    await run(['pull', 'qwen3:1.7b']);
   }
+  await run(['create', model, '-f', join(root, 'demo/Qwen.Modelfile')]);
+}
+
+export async function warmModel() {
   const warm = await fetch(ollamaOrigin + '/api/generate', {
     method: 'POST', headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ model, prompt: '', stream: false, keep_alive: '30m' }),
