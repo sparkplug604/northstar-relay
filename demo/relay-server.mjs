@@ -77,6 +77,21 @@ try {
   await registerRelayIntegrations(app, options);
   await registerRelayIntake(app, options);
   await app.register(require('@fastify/static'), { root: join(relayRoot, 'dist-web'), index: false });
+  // This convenience login exists only in the loopback synthetic launcher.
+  app.post('/api/relay/v1/auth/demo', async (request, reply) => {
+    if (request.headers.origin !== relayOrigin || request.headers.host !== new URL(relayOrigin).host) {
+      return reply.code(403).send({ error: 'demo_origin_required' });
+    }
+    const login = await app.inject({
+      method: 'POST',
+      url: '/api/relay/v1/auth/login',
+      headers: { origin: relayOrigin, 'content-type': 'application/json' },
+      payload: { email: dispatcherEmail, password },
+    });
+    const cookies = login.headers['set-cookie'];
+    if (cookies) reply.header('set-cookie', cookies);
+    return reply.code(login.statusCode).send(login.json());
+  });
   app.get('/', (_request, reply) => reply.redirect('/relay'));
   app.get('/relay', (_request, reply) => reply.sendFile('index.html'));
   app.get('/relay/*', (_request, reply) => reply.sendFile('index.html'));

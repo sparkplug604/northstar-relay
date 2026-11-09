@@ -34,6 +34,10 @@
 .relay-actions { display:flex; align-items:center; flex-wrap:wrap; gap:.6rem; }
 .relay-card { background:white; border:1px solid var(--relay-border); padding:1.5rem; border-radius:12px; margin-bottom:1.4rem; }
 .relay-auth { width:min(100%,480px); margin:2rem auto; }
+.relay-demo-login { display:grid; gap:.65rem; justify-items:start; margin:0 0 1.15rem; padding:1rem; border:1px solid var(--relay-border); border-radius:9px; background:#f4f7f5; }
+.relay-demo-login p { margin:0; font-weight:600; }
+.relay-demo-login a { font-size:.88rem; }
+
 .relay-app form { display:flex; flex-direction:column; gap:1.05rem; margin:0; }
 .relay-app label { display:flex; flex-direction:column; gap:.4rem; font-size:.86rem; font-weight:600; color:var(--relay-ink); }
 .relay-app input,.relay-app select,.relay-app textarea { width:100%; min-width:0; background:white; color:var(--relay-ink); border:1px solid #bacbc1; border-radius:7px; padding:.65rem .75rem; min-height:43px; font-size:.95rem; box-shadow:none; }

@@ -13,16 +13,21 @@ export function Auth({ language, onSession }: { language: Language; onSession(se
   const [copied, setCopied] = useState(false);
   const t = (key: Parameters<typeof tr>[1]) => tr(language, key);
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault(); setBusy(true); setError("");
-    const data = new FormData(event.currentTarget);
-    const body = Object.fromEntries(data.entries());
+  const demoLogin = mode === "login" && import.meta.env.VITE_RELAY_PLANNING_DEMO === "true" &&
+    window.location.origin === "http://127.0.0.1:3004";
+
+  async function authenticate(action: typeof mode | "demo", body: object) {
+    setBusy(true); setError("");
     try {
-      const result = await relayRequest<AuthResult>(`/auth/${mode}`, { method: "POST", body, unauthenticated: true });
+      const result = await relayRequest<AuthResult>(`/auth/${action}`, { method: "POST", body, unauthenticated: true });
       if (isMfaChallenge(result)) { useSessionToken(result); setMfa(result.enrollmentRequired ? "enroll" : "confirm"); }
       else onSession(await relayRequest<Session>("/session"));
     } catch (failure) { setError(errorLabel(language, failure)); }
     finally { setBusy(false); }
+  }
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void authenticate(mode, Object.fromEntries(new FormData(event.currentTarget)));
   }
   async function enroll() {
     setBusy(true); setError("");
@@ -80,7 +85,15 @@ export function Auth({ language, onSession }: { language: Language; onSession(se
   return <section className="relay-auth relay-card" aria-labelledby="relay-auth-title">
     <h1 id="relay-auth-title">{t(mode === "login" ? "signIn" : "setup")}</h1>
     {error && <p className="relay-error" role="alert">{error}</p>}
-    <form key={mode} onSubmit={(event) => void submit(event)}>
+    {demoLogin && <div className="relay-demo-login">
+      <p>{language === "fr" ? "Essayer le compte de démonstration" : "Try the synthetic demo account"}</p>
+      <small><code>dispatch@relay-demo.invalid</code></small>
+      <button className="relay-primary" type="button" disabled={busy} onClick={() => void authenticate("demo", {})}>
+        {busy ? t("loading") : language === "fr" ? "Se connecter comme Drew Dispatcher" : "Sign in as Drew Dispatcher"}
+      </button>
+      <a href="https://github.com/sparkplug604/northstar-relay/blob/main/docs/getting-started.md">{language === "fr" ? "Guide de démarrage" : "Getting Started"}</a>
+    </div>}
+    <form key={mode} onSubmit={submit}>
       {mode === "setup" && <>
         <p className="relay-muted">{t("setupHelp")}</p>
         <label>{t("setupToken")}<input name="setupToken" type="password" required autoComplete="off" /></label>
@@ -91,7 +104,7 @@ export function Auth({ language, onSession }: { language: Language; onSession(se
       </>}
       <label>{t("email")}<input autoFocus name="email" type="email" required autoComplete="username" maxLength={254} /></label>
       <label>{t("password")}<input name="password" type="password" required minLength={mode === "setup" ? 12 : undefined} autoComplete={mode === "setup" ? "new-password" : "current-password"} />{mode === "setup" && <small>{t("passwordHelp")}</small>}</label>
-      <button className="relay-primary" disabled={busy} type="submit">{t(busy ? "loading" : mode === "login" ? "signIn" : "createAccount")}</button>
+      <button className={demoLogin ? undefined : "relay-primary"} disabled={busy} type="submit">{t(busy ? "loading" : mode === "login" ? "signIn" : "createAccount")}</button>
     </form>
     <button className="relay-text-button" type="button" disabled={busy} onClick={() => { setMode(mode === "login" ? "setup" : "login"); setError(""); }}>{t(mode === "login" ? "setup" : "backLogin")}</button>
   </section>;

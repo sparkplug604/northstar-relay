@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { agentRoot, dispatcherEmail, nativeOrigin, ollamaOrigin, postgresPort, relayOrigin, relayRoot, root, runtime } from './constants.mjs';
-import { prepareNative, warmModel } from './native.mjs';
+import { prepareNative, provisionModel, warmModel } from './native.mjs';
 
 const exec = promisify(execFile);
 const require = createRequire(join(relayRoot, 'package.json'));
@@ -21,7 +21,7 @@ const readJson = async path => JSON.parse(await readFile(path, 'utf8'));
 const alive = pid => { try { process.kill(pid, 0); return true; } catch { return false; } };
 
 function safeEnv() {
-  const keys = ['HOME', 'PATH', 'USER', 'LOGNAME', 'TMPDIR', 'LANG', 'LC_ALL', 'SSL_CERT_FILE', 'NODE_EXTRA_CA_CERTS', 'RELAY_ROUTING_URL'];
+  const keys = ['HOME', 'PATH', 'USER', 'LOGNAME', 'TMPDIR', 'LANG', 'LC_ALL', 'SSL_CERT_FILE', 'NODE_EXTRA_CA_CERTS', 'OLLAMA_MODELS', 'RELAY_ROUTING_URL'];
   return Object.fromEntries(keys.filter(key => process.env[key]).map(key => [key, process.env[key]]));
 }
 
@@ -84,19 +84,24 @@ async function start() {
     });
     if (!current) child.unref();
     await log.close();
+    let announcedDownload = false;
     await waitFor('Demo startup', async () => {
       const state = await readJson(stateFile).catch(() => null);
       if (state?.pid !== child.pid) return false;
       if (state.phase === 'failed') throw new Error(state.error);
+      if (state.phase === 'downloading-model' && !announcedDownload) {
+        console.log('Preparing Qwen on this machine. A first download is about 1.4 GB. See runtime/logs/supervisor.log for progress.');
+        announcedDownload = true;
+      }
       return state.phase === 'ready' && alive(state.pid);
-    }, 180_000);
+    }, 20 * 60_000);
   }
   const manifest = await readJson(manifestFile);
-  console.log('Relay: ' + relayOrigin + '/relay');
+  console.log('Sign in as Drew Dispatcher: ' + relayOrigin + '/relay/sign-in');
   console.log('Parkside Foods: ' + manifest.parksideUrl);
   console.log('Harbour Market: ' + manifest.harbourUrl);
   console.log('Parkside target date: ' + manifest.targetDate + ' by 6 p.m. Vancouver time');
-  console.log('Use ./demo.sh credentials for the local synthetic login.');
+  console.log('Choose Sign in as Drew Dispatcher, or run ./demo.sh credentials to enter the demo login manually.');
 }
 
 async function stop() {
@@ -189,6 +194,9 @@ async function serve() {
       });
     }
     await waitFor('Ollama', () => http(ollamaOrigin + '/api/tags'));
+    await provisionModel(async () => {
+      await saveState({ pid: process.pid, phase: 'downloading-model' });
+    });
     await warmModel();
     await child('agent', process.execPath, ['node_modules/vite/bin/vite.js', '--host', '127.0.0.1', '--port', '3005', '--strictPort'], agentRoot, {
       OLLAMA_BASE_URL: ollamaOrigin,
@@ -210,7 +218,7 @@ try {
     case 'stop': await stop(); break;
     case 'status': console.log((await manager())?.phase ?? 'stopped'); break;
     case 'credentials': console.log(dispatcherEmail + '\n' + (await config()).dispatcherPassword); break;
-    default: throw new Error('Use ./demo.sh install | start | status | stop | credentials.');
+    default: throw new Error('Use ./demo.sh launch | install | start | status | stop | credentials.');
   }
 } catch (error) {
   console.error(error.code === 'ENOENT' ? 'Start the demo to generate its local data.' : error.message);

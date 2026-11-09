@@ -2,14 +2,13 @@
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { join } from 'node:path';
-import { dispatcherEmail, engine, model, nativeOrigin, relayOrigin, relayRoot, runtime } from './constants.mjs';
+import { engine, model, nativeOrigin, relayOrigin, relayRoot, runtime } from './constants.mjs';
 import { dispatchZone } from '../relay/dist/packages/relay-storage-postgres/src/timezone.js';
 
 const require = createRequire(join(relayRoot, 'package.json'));
 const { chromium, expect } = require('@playwright/test');
 const { DateTime } = require('luxon');
-const [manifest, config] = await Promise.all(['manifest.json', 'private.json'].map(async file =>
-  JSON.parse(await readFile(join(runtime, file), 'utf8'))));
+const manifest = JSON.parse(await readFile(join(runtime, 'manifest.json'), 'utf8'));
 const zone = dispatchZone('America/Vancouver');
 const local = value => DateTime.fromISO(value).setZone(zone);
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
@@ -25,11 +24,9 @@ try {
   const job = id => read(relayApi + '/jobs/' + id);
   const signIn = async () => {
     await page.goto(relayOrigin + '/relay/sign-in');
-    await page.locator('[name=email]').fill(dispatcherEmail);
-    await page.locator('[name=password]').fill(config.dispatcherPassword);
     await Promise.all([
       page.waitForURL(/\/relay\/?$/),
-      page.getByRole('button', { name: 'Sign in', exact: true }).click(),
+      page.getByRole('button', { name: 'Sign in as Drew Dispatcher', exact: true }).click(),
     ]);
   };
   await signIn();
