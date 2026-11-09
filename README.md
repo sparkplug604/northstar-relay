@@ -10,7 +10,7 @@ Our entry for the **2026 Builder.io Agent-Native Hackathon** puts the dispatcher
 
 Watch Parkside Foods from **0:41** for two approvals in one conversation. At **2:00**, Harbour Market shows the reverse direction. Drew edits the assignment on the job page, then Ask Relay reads the saved change.
 
-<!-- Inline video attachment -->
+https://github.com/user-attachments/assets/308244f3-e3f1-47f8-bb7f-99b310aa722b
 
 [Full-resolution video on GitHub Releases](https://github.com/sparkplug604/northstar-relay/releases/tag/hackathon-demo)
 
